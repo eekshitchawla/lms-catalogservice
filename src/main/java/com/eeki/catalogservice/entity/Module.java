@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "modules", schema = "catalog")
+@Table(name = "modules")
 public class Module {
 
     @Id
