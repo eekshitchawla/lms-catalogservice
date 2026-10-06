@@ -11,6 +11,7 @@ import com.eeki.catalogservice.repository.CourseRepository;
 import com.eeki.catalogservice.repository.ModuleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,9 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final RestTemplate restTemplate;
-    private static final String TASK_SERVICE_URL = "http://localhost:8080/api/v1/tasks";
+
+    @Value("${TASK_SERVICE_URL:http://localhost:8080/api/v1/tasks}")
+    private String taskServiceUrl;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,7 +72,7 @@ public class CourseServiceImpl implements CourseService {
 
         try {
             // Call Task Service to create a new task
-            restTemplate.postForObject(TASK_SERVICE_URL, taskRequest, Object.class);
+            restTemplate.postForObject(taskServiceUrl, taskRequest, Object.class);
             log.info("User {} successfully enrolled in course {}", enrollRequest.userId(), courseId);
         } catch (RestClientException e) {
             log.error("Failed to create task for user enrollment: {}", e.getMessage(), e);
